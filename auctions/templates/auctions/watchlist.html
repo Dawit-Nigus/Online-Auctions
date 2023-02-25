@@ -1,0 +1,97 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<style>
+  .start-screen {
+    display: flex;
+    justify-content: center;
+    flex-flow: nowrap column;
+    align-items: center;
+  }
+  .loading {
+    display: flex;
+    margin: 24px 0;
+  }
+  .loading__element {
+    font: normal 100 2rem/1 Roboto;
+    letter-spacing: .5em;
+    font-weight: bold;
+  }
+  [class*="el"] {
+    animation: bouncing 2s infinite ease;
+  }
+  
+  @for $i from 1 through 9 {
+    $delay: percentage($i);
+    .el#{$i} {
+      animation-delay: $delay / 1000% + s;
+    }
+  }
+  
+  @keyframes bouncing {
+    0%, 100% {
+      transform: scale3d(1,1,1);
+    }
+    50% {
+      transform: scale3d(0,0,1);
+    }
+  }
+  </style>
+  <!-- <h2 class="blue-text">WatchList</h2> -->
+  <div class="start-screen" align-item="center">
+
+    <div class="loading">
+      <div class="loading__element el1">W</div>
+      <div class="loading__element el2">A</div>
+      <div class="loading__element el3">T</div>
+      <div class="loading__element el4">C</div>
+      <div class="loading__element el5">H</div>
+      <div class="loading__element el6">L</div>
+      <div class="loading__element el7">I</div>
+      <div class="loading__element el8">S</div>
+      <div class="loading__element el9">T</div>
+      <div class="loading__element el10">"</div>
+    </div>    
+  </div>
+
+  {% if message %}
+  <div class="alert alert-info">
+    {{ message }}
+  </div>
+  {% endif %}
+
+  {% if listings %}
+  <ul class="listings">
+    {% for list in listings %}
+    <li>
+      <div class="card">
+        <div class="card-header">
+          {{ list.listing.name }}
+        </div>
+        <div class="card-body">
+          <img alt="{{ list.listing.name }} - img" src="{{ list.listing.image.url }}" height="170" />
+          {% if list.bid != None %}
+          <h5 class="list-cost" style="color: var(--danger)">Bidding has started on this item</h5>
+          <h5 class="list-cost">Current Highest Bid: <strong style="color: var(--warning)">ETB{{ list.bid.highest_bid }}</strong></h5>
+          {% else %}
+          <h5 class="list-cost" style="color: var(--success)">No Bids Currently Placed</h5>
+          <h5 class="list-cost">Bid Starts From: <strong>${{ list.listing.initial }}</strong> </h5>
+          {% endif %}
+          <div class="links-box">
+            <a class="btn btn-outline-primary" href="{% url 'auctions:listing' list.listing.id %}">View Listing</a>
+            <a class="btn btn-outline-success" href="{% url 'auctions:add_to' list.listing.id %}">Add to WatchList</a>
+          </div>
+          <br> <br>
+          <a class="btn btn-outline-danger" href="{% url 'auctions:remove' list.listing.id %}">Remove from WatchList</a>
+          <h6 class="text-muted right-align">Date added: {{ list.listing.created }}</h6>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+    <li class="card card-header bg-info">
+      <div style="text-align: center; color: white;"> --- END --- </div>
+    </li>
+  </ul>
+  
+  {% endif %}
+{% endblock %}

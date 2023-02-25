@@ -1,0 +1,80 @@
+{% include "auctions/layout.html" %}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Payment Services</title>
+	<meta id="meta" name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+</head>
+<body>
+    <div class="card border-success success-card">
+        <h4 class="card-header border-success bg-light">Winner {{ request.user }}!</h4>
+        <div class="card-body">
+          <img src="{{ listing.image.url }}" alt="{{ listing.name }}" height="200" />
+          <br>
+          You have successfully won the bid for: <strong style="color: var(--gray)">{{ listing.name }}</strong>
+          <br>
+          For the price of: <strong style="color: var(--warning)">ETB {{ bid.highest_bid }}</strong> <br>
+          <!-- <a class="btn btn-outline-success" href="{% url 'auctions:checkout' %}">Pay Now </a> -->
+        
+    <h3> yenepay </h3>
+    <form action="https://test.yenepay.com/" method="POST">
+        <input type="hidden" name="process" value="Express">
+        <input type="hidden" name="successUrl" value="http://localhost:8000/success">
+        <input type="hidden" name="cancelUrl" value="http://localhost:8000/cancel">
+        <input type="hidden" name="merchantId" value="SB2169">
+        <input type="hidden" name="merchantOrderId" value="2811.0">
+        <input type="hidden" name="expiresAfter" value="24">
+        <input type="hidden" name="itemId" value="60">
+        <input type="hidden" name="itemName" value="Billing">
+        <input type="hidden" name="unitPrice" value="{{ bid.highest_bid }}">
+        <input type="hidden" name="quantity" value="1">
+        <input type="hidden" name="discount" value="0.0">
+        <input type="hidden" name="handlingFee" value="0.0">
+        <input type="hidden" name="deliveryFee" value="0.0">
+        <input type="hidden" name="tax1" value="0.0">
+        <input type="hidden" name="tax2" value="0.0">
+        {{ bid.highest_bid }}
+        <input type="submit" class="btn btn-outline-warning" value="Pay with yenepay">
+    </form>
+
+	<h1> Paypal </h1>
+     <div id="paypal-button-container"></div>
+      <script src="https://www.paypal.com/sdk/js?client-id=AZcHtJ8yre9dbnji6xMmDy1SFqRV0s03n_bTDFJKgvGjOxsisR3AU-HjD_S_mRnmU1yoAEalcq0b_QQy&currency=USD&disable-funding=credit"></script>
+    </div>
+</div>
+     
+     
+     <script>
+        // Render the PayPal button into #paypal-button-container
+        var total = '{{bid.highest_bid}}' / 60    // Convert ETB to USD
+        paypal.Buttons({
+             style: {
+                color:  'blue',
+                shape:  'rect',
+                label:  'pay',
+                height: 40
+            },
+            // Set up the transaction
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: total
+                        }
+                    }]
+                });
+            },
+
+            // Finalize the transaction
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    // Show a success message to the buyer
+                    alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                });
+            }
+        }).render('#paypal-button-container');
+    </script>
+</body>
+</html>

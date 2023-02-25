@@ -1,0 +1,132 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="start-screen" align-item="center">
+
+  <div class="loading">
+    <div class="loading__element el1">C</div>
+    <div class="loading__element el2">L</div>
+    <div class="loading__element el3">O</div>
+    <div class="loading__element el4">S</div>
+    <div class="loading__element el5">E</div>
+    <div class="loading__element el6">D</div>
+    <div class="loading__element el7">/\</div>
+  </div>
+  
+    <div class="loading">
+    <div class="loading__element el1">L</div>
+    <div class="loading__element el2">I</div>
+    <div class="loading__element el3">S</div>
+    <div class="loading__element el4">T</div>
+    <div class="loading__element el5">I</div>
+    <div class="loading__element el6">N</div>
+    <div class="loading__element el7">G</div>
+    <div class="loading__element el8">S</div>
+    <div class="loading__element el9">/\</div>
+  </div>
+  
+</div>
+  <div class="add-listing-container">
+    <!-- <h2 class="blue-text margin-bot">
+      Closed Listings
+    </h2> -->
+    {% if user.is_authenticated %}
+    <h5 title="add listing" class="plus-container">
+      <a class="btn btn-outline-success plus-link" href="{% url 'auctions:add_listing' %}">+ Add new Listing</a>
+      <a class="btn btn-outline-warning plus-link" href="{% url 'auctions:user_listings' %}">
+        View Your Listings
+      </a>
+    </h5>
+    {% endif %}
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      {{ message }}
+    </div>
+    {% endfor %}
+  {% endif %}
+
+  {% if listings %}
+  <ul class="listings">
+    {% for list in listings %}
+    <li>
+      <div class="card">
+        <div class="card-header">
+          {{ list.listing.name }}
+          {% if list.listing.user == user %}
+          <div class="owned-icon" title="You Own This Listing">
+            ★
+          </div>
+          {% endif %}
+        </div>
+        <div class="card-body">
+          <img alt="{{ list.listing.name }} - img" src="{{ list.listing.image.url }}" height="170" />
+          {% if list.bid != None %}
+          <h5 class="list-cost" style="color: var(--danger)">Bidding has started on this item</h5>
+          <h5 class="list-cost">Current Highest Bid: <strong style="color: var(--warning)">ETB {{ list.bid.highest_bid }}</strong></h5>
+          {% else %}
+          <h5 class="list-cost" style="color: var(--success)">No Bids Currently Placed</h5>
+          <h5 class="list-cost">Bid Starts From: <strong>ETB {{ list.listing.initial }}</strong> </h5>
+          {% endif %}
+          <h5> Category: <strong style="color: var(--gray)">{{ list.listing.category }}</strong> </h5>
+          {% if user.is_authenticated %}
+          <div class="links-box">
+            <a class="btn btn-outline-primary" href="{% url 'auctions:listing' list.listing.id %}">View Listing</a>
+            <!-- <a class="btn btn-outline-success" href="{% url 'auctions:add_to' list.listing.id %}">Add to WatchList</a> -->
+            {% if listing.user == user %}
+            <!-- <a class="btn btn-outline-danger" href="{% url 'auctions:close_listing' list.listing.id %}">Close Listing</a> -->
+            {% endif %}
+          </div>
+          {% else %}
+          <a class="nav-link" href="{% url 'auctions:login' %}">LogIn to view listing</a>
+          {% endif %}
+          <h6 class="text-muted right-align">Date added: {{ list.listing.created }}</h6>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+    <li class="card card-header bg-info">
+      <a class="btn btn-outline-success" href="{% url 'auctions:checkout' %}">Donate For Developer</a>
+      <div style="text-align: center; color: white;"> --- END --- </div>
+    </li>
+  </ul>
+  <style>
+    .start-screen {
+      display: flex;
+      justify-content: center;
+      flex-flow: nowrap column;
+      align-items: center;
+    }
+    .loading {
+      display: flex;
+      margin: 24px 0;
+    }
+    .loading__element {
+      font: normal 100 2rem/1 Roboto;
+      letter-spacing: .5em;
+      font-weight: bold;
+    }
+    [class*="el"] {
+      animation: bouncing 2s infinite ease;
+    }
+    
+    @for $i from 1 through 9 {
+      $delay: percentage($i);
+      .el#{$i} {
+        animation-delay: $delay / 1000% + s;
+      }
+    }
+    
+    @keyframes bouncing {
+      0%, 100% {
+        transform: scale3d(1,1,1);
+      }
+      50% {
+        transform: scale3d(0,0,1);
+      }
+    }
+    </style>
+  {% endif %}
+{% endblock %}

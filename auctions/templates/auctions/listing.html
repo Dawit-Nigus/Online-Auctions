@@ -1,0 +1,98 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+{{ listing.name }}
+{% endblock %}
+
+{% block body %}
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}">
+    {{ message }}
+  </div>
+  {% endfor %}
+{% endif %}
+
+<h2 class="listing-name">{{ listing.name }}</h2>
+
+<div class="listing-img" >
+  <img alt="{{ listing.name }} - img" src="{{ listing.image.url }}" />
+</div>
+
+<div class="bid-info">
+  Posted By: <span style="color: var(--warning)">{{ listing.user }}</span> <br>
+  {% if bid %}
+  Current Highest Bid: <strong style="color: var(--danger)">ETB {{ bid.highest_bid }}</strong>
+  <br>
+  By: <span style="color: var(--warning)">{{ bid.user }}</span>
+  <div class="text-muted">Bid added at {{ bid.added }}</div>
+  <br><br>
+  {% else %}
+  <span style="color: var(--success)">
+    No Bids Currently Placed
+  </span>
+  <br>
+  Bids start from <strong style="color: var(--warning)">ETB{{ listing.initial }}</strong>
+  <br><br>
+  {% endif %}
+  <a class="btn btn-success" href="{% url 'auctions:add_to' listing.id %}">Add to WatchList</a>
+  {% if listing.user == user %}
+  <br><br>
+  <a class="btn btn-danger" href="{% url 'auctions:close_listing' listing.id %}">Close Listing</a>
+  {% endif %}
+</div>
+<hr>
+{% if listing.user != user %}
+<h5>Bid </h5>
+<form class="login-form" action="{% url 'auctions:bid' %}" method="POST">
+  {% csrf_token %}
+  <div class="input-group">
+    <div class="input-group-prepend">
+      <div class="input-group-text bg-warning">ETB</div>
+    </div>
+    <input class="form-control" type="number" min="1" name="bid" value="{{ default_bid }}" placeholder="Enter your bid here">
+  </div>
+  <input name="list_id" type="hidden" value="{{ listing.id }}" />
+  <button class="btn btn-primary" type="submit" style="margin-top: 10px;">Place Bid</button>
+</form>
+{% else %}
+<div class="alert alert-info">
+  Owner cannot bid on their own item.
+</div>
+{% endif %}
+<hr>
+<div class="listing-comments">
+  <h5>Comments </h5>
+  <div class="comment-container">
+  {% if comments %}
+    {% for comment in comments %}
+    <div class="card bg-light border-success" style="margin: 5px;">
+      <div class="comment-owner">
+        {{ comment.user }}
+      </div>
+      <span class="comment-content">
+        {{ comment.comment }}
+      </span>
+      <span class="text-muted" style="text-align: right; margin-right: 5px;">
+        {{ comment.added }}
+      </span>
+    </div>
+    {% endfor %}
+  {% else %}
+  <span class="text-muted">
+    No comments at the moment
+  </span>
+  {% endif %}
+  </div>
+  <hr>
+  <form class="comment-form" action="{% url 'auctions:comment' %}" method="POST">
+    Your Comment:
+    {% csrf_token %}
+    <textarea name="content" class="form-control" placeholder="enter your comment here" rows="3" maxlength="400"></textarea>
+    <input name="list_id" type="hidden" value="{{ listing.id }}" />
+    <button class="btn btn-primary" type="submit">Comment</button>
+  </form>
+</div>
+
+{% endblock %}

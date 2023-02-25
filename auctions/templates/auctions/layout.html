@@ -1,0 +1,54 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title contenteditable>{% block title %}Auctions{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
+    <link href="{% static 'auctions/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'auctions/style.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+  </head>
+  <body>
+    <h1 id="auction-title">Auctions</h1>
+    <nav>
+      {% if user.is_authenticated %}
+      <div class="username">
+        Signed in as <strong style="color: var(--indigo)">{{ user.username }}</strong>.
+      </div>
+      {% endif %}
+      <ul class="nav">
+        <li class="nav-item">
+          <a class="nav-link btn btn-outline-info" href="{% url 'auctions:index' %}">Active Listings</a>
+        </li> &nbsp;&nbsp;
+        <li class="nav-item">
+          <a class="nav-link btn btn-outline-info" href="{% url 'auctions:closed' %}">Closed Listings</a>
+        </li> &nbsp;&nbsp;
+        <li class="nav-item">
+          <a class="nav-link btn btn-outline-info" href="{% url 'auctions:categories' %}">Categories</a>
+        </li> &nbsp;&nbsp;
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link btn btn-outline-info" href="{% url 'auctions:watchlist' %}">WatchList</a>
+        </li>&nbsp;&nbsp;
+        <li class="nav-item">
+          <a class="nav-link btn btn-outline-info" href="{% url 'auctions:logout' %}">Log Out</a>
+        </li>&nbsp;&nbsp;
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link btn btn-outline-info" href="{% url 'auctions:login' %}">Log In</a>
+        </li>&nbsp;&nbsp;
+        <li class="nav-item">
+          <a class="nav-link btn btn-outline-info" href="{% url 'auctions:register' %}">Register</a>
+        </li>&nbsp;&nbsp;
+        {% endif %}
+      </ul>
+    </nav>
+    <br>
+    <hr>
+   
+    {% block body %}
+    {% endblock %}
+  </body>
+</html>

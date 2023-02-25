@@ -1,0 +1,22 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+Winner
+{% endblock %}
+
+{% block body %}
+
+<div class="card border-success success-card">
+  <h4 class="card-header border-success bg-light">Winner {{ request.user }}!</h4>
+  <div class="card-body">
+    <img src="{{ listing.image.url }}" alt="{{ listing.name }}" height="200" />
+    <br>
+    You have successfully won the bid for: <strong style="color: var(--gray)">{{ listing.name }}</strong>
+    <br>
+    For the price of: <strong style="color: var(--warning)">ETB {{ bid.highest_bid }}</strong> <br>
+    <a class="btn btn-outline-success" href="{% url 'auctions:checkout' %}">Pay Now </a>
+  </div>
+</div>
+
+
+{% endblock %}

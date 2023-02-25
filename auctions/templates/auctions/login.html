@@ -1,0 +1,40 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h2 class="blue-text">Login</h2>
+
+    {% if message %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endif %}
+
+    <form class="login-form" action="{% url 'auctions:login' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input autofocus class="form-control" type="text" name="username" placeholder="Username">
+        </div>
+        <br>
+        <div class="form-group">
+            <input class="form-control" type="password" name="password" placeholder="Password">
+        </div>
+        <br>
+        <input class="btn btn-success" type="submit" value="Login">
+        <br>
+        Sign in with 
+            <a href="{% url 'social:begin' 'facebook' %}"><i class="fab fa-facebook fa-2x"></i> </a>
+            <a href="{% url 'social:begin' 'github' %}"> <i class="fab fa-github fa-2x"style="color: #000"></i> </a>
+            <!-- <a href="{% url 'social:begin' 'twitter' %}" > <i class="fab fa-twitter fa-2x"></i> </a> -->
+    </form>
+    <br>
+    <div class="center-text">
+      Don't have an account? <a class="btn btn-outline-info " href="{% url 'auctions:register' %}">Register here</a>
+      <br><br>
+      <a class="btn btn-outline-danger " href="/reset_password">Forgot Password</a> <br>
+      Join Our Telegram for Live info <a href=""><i class="fab fa-telegram" style="font-size:36px;color:blue"></i></a>
+      <!-- <a href="{% url 'social:begin' 'facebook' %}">Login with Facebook</a> -->
+      <!-- <a href="{% url 'social:begin' 'github' %}">Login with Github</a> <br/> -->
+      <!-- <a href="{% url 'social:begin' 'twitter' %}">Login with Twitter</a> -->
+    </div>
+
+{% endblock %}
+
